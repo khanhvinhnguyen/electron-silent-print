@@ -1,0 +1,12 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\myprintapp]
+@="URL:My Print App"
+"URL Protocol"=""
+
+[HKEY_CLASSES_ROOT\myprintapp\shell]
+
+[HKEY_CLASSES_ROOT\myprintapp\shell\open]
+
+[HKEY_CLASSES_ROOT\myprintapp\shell\open\command]
+@="\"C:\\Print\\deeplinkPrinting.exe\" \"%1\""

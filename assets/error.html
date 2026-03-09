@@ -1,0 +1,47 @@
+<!-- assets/error.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connection Error</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #1a1a1a;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      text-align: center;
+      padding: 40px;
+      border: 2px solid #ff4757;
+      border-radius: 10px;
+    }
+    h1 { color: #ff4757; }
+    p { margin: 10px 0; }
+    button {
+      background: #ff4757;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    button:hover { background: #ff6b81; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>⚠️ Cannot Connect to UI Server</h1>
+    <p>The remote interface could not be loaded.</p>
+    <p>Please check your internet connection.</p>
+    <button onclick="location.reload()">Retry</button>
+  </div>
+</body>
+</html>

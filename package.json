@@ -1,0 +1,73 @@
+{
+  "name": "electron-silent-print",
+  "version": "1.0.1",
+  "description": "Electron app for silent printing with remote Vite UI",
+  "main": "dist/main/main.js",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development npm run start",
+    "dev:remote": "cross-env NODE_ENV=development REMOTE_UI_URL=https://your-staging-domain.com npm run start",
+    "build": "tsc -p tsconfig.json",
+    "build:watch": "tsc -p tsconfig.json --watch",
+    "start": "electron .",
+    "start:dev": "cross-env NODE_ENV=development electron .",
+    "start:prod": "cross-env NODE_ENV=production electron .",
+    "package": "npm run build && electron-builder",
+    "package:win": "npm run build && cross-env NODE_ENV=production electron-builder --win",
+    "package:mac": "npm run build && cross-env NODE_ENV=production electron-builder --mac",
+    "package:linux": "npm run build && cross-env NODE_ENV=production electron-builder --linux",
+    "package:win-dev": "npm run build && cross-env NODE_ENV=development electron-builder --win",
+    "clean": "rm -rf dist release",
+    "rebuild": "npm run clean && npm run build"
+  },
+  "keywords": [],
+  "author": "KhanhVinhNguyen",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^17.2.4",
+    "pdfkit": "^0.17.2",
+    "sharp": "^0.34.5"
+  },
+  "devDependencies": {
+    "@types/electron-devtools-installer": "^2.2.5",
+    "@types/node": "^25.2.3",
+    "@types/pdfkit": "^0.17.5",
+    "concurrently": "^9.2.1",
+    "cross-env": "^10.1.0",
+    "electron": "^40.4.0",
+    "electron-builder": "^26.7.0",
+    "nodemon": "^3.1.11",
+    "typescript": "^5.9.3",
+    "wait-on": "^9.0.3"
+  },
+  "build": {
+    "appId": "com.khanhvinhnguyen.electron-silent-print",
+    "productName": "Invisalign Chibi",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "assets/**/*",
+      "package.json",
+      ".env*"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "assets/icons/icon.ico"
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "icon": "assets/icons/icon.icns"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "icon": "assets/icons/icon.png"
+    }
+  }
+}
