@@ -2,7 +2,7 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
 interface PrintRequest {
-  type: 'html' | 'pdf' | 'image';
+  type: 'html' | 'pdf' | 'image' | 'deeplink' | 'direct';
   content?: string;
   filePath?: string;           // ← Bổ sung
   printerName?: string;

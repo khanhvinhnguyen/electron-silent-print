@@ -4,6 +4,7 @@ import { IpcMain, BrowserWindow } from 'electron';
 import { randomUUID } from 'crypto';
 import { pathToFileURL } from 'url';
 import { nativePrint4x6, printDeeplink } from './print-native';
+import { printDirect } from './print-direct';
 
 // ==================== SHARED STATE ====================
 let selectedPrinterName: string | null = null;
@@ -47,7 +48,7 @@ export function setCurrentPageSize(size: PageSizeOption) { currentPageSize = siz
 
 // ==================== PRINT REQUEST INTERFACE (ĐÃ BỔ SUNG 'image') ====================
 export interface PrintRequest {
-  type: 'html' | 'pdf' | 'image' | 'deeplink';   // ← Bổ sung 'image'
+  type: 'html' | 'pdf' | 'image' | 'deeplink' | 'direct';
   content?: string;                 // dùng cho html
   filePath?: string;                // dùng cho image
   printerName?: string;
@@ -92,6 +93,10 @@ export function setupPrintHandlers(ipcMain: IpcMain): void {
         };
       } else if (printData.type === 'deeplink') {
         printResult = await printDeeplink(printData, jobId);
+      } else if (printData.type === 'direct') {
+        if (!printData.filePath) throw new Error('direct print requires filePath');
+        const deviceName = printData.printerName || selectedPrinterName || undefined;
+        printResult = await printDirect(printData.filePath, deviceName, printData.silent !== false);
       } else {
         throw new Error(`Unsupported print type: ${printData.type}`);
       }
