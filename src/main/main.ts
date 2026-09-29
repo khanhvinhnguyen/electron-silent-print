@@ -14,7 +14,7 @@ const ENV = {
   REMOTE_UI_URL: process.env.REMOTE_UI_URL || 'http://localhost:5173',
   ENABLE_DEVTOOLS: process.env.ENABLE_DEVTOOLS === 'true' || (process.env.ENABLE_DEVTOOLS === undefined && NODE_ENV !== 'production'),
   DEBUG_LOGS: process.env.DEBUG_LOGS === 'true',
-  APP_NAME: process.env.APP_NAME || 'SilentPrint',
+  APP_NAME: process.env.APP_NAME || 'Uniqlo Chibi',
   APP_VERSION: app.getVersion()
 };
 

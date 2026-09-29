@@ -12,10 +12,10 @@
     "start:dev": "cross-env NODE_ENV=development electron .",
     "start:prod": "cross-env NODE_ENV=production electron .",
     "package": "npm run build && electron-builder",
-    "package:win": "npm run build && cross-env NODE_ENV=production electron-builder --win",
+    "package:win": "npm run build && cross-env NODE_ENV=production electron-builder --win --x64",
     "package:mac": "npm run build && cross-env NODE_ENV=production electron-builder --mac",
     "package:linux": "npm run build && cross-env NODE_ENV=production electron-builder --linux",
-    "package:win-dev": "npm run build && cross-env NODE_ENV=development electron-builder --win",
+    "package:win-dev": "npm run build && cross-env NODE_ENV=development electron-builder --win --x64",
     "clean": "rm -rf dist release",
     "rebuild": "npm run clean && npm run build"
   },
@@ -41,7 +41,7 @@
   },
   "build": {
     "appId": "com.khanhvinhnguyen.electron-silent-print",
-    "productName": "Invisalign Chibi",
+    "productName": "Uniqlo Chibi",
     "directories": {
       "output": "release"
     },
