@@ -9,6 +9,18 @@ import sharp from "sharp";
 const PHOTO_SHORT_UM = 101_600; // 10.16 cm
 const PHOTO_LONG_UM = 152_400; // 15.24 cm
 
+// Góc xoay bù (chiều kim đồng hồ) áp sau khi bake EXIF, để bù driver máy in xoay ảnh.
+// Ảnh in bị xoay sai 90° → bù 270°. Nếu in ra vẫn ngược chiều thì đổi thành 90.
+// Có thể override khi test bằng env PRINT_ROTATE_DEG (0 | 90 | 180 | 270).
+const DEFAULT_PRINT_ROTATE_DEG = 270;
+
+function getPrintRotateDeg(): number {
+  const raw = process.env.PRINT_ROTATE_DEG;
+  if (raw === undefined || raw === "") return DEFAULT_PRINT_ROTATE_DEG;
+  const deg = ((Number(raw) % 360) + 360) % 360;
+  return [0, 90, 180, 270].includes(deg) ? deg : DEFAULT_PRINT_ROTATE_DEG;
+}
+
 async function bakeOrientation(inputPath: string): Promise<{ filePath: string; landscape: boolean }> {
   const tempDir = path.join(os.tmpdir(), "silentprint");
   if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir, { recursive: true });
@@ -16,12 +28,23 @@ async function bakeOrientation(inputPath: string): Promise<{ filePath: string; l
   const id = `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
   const filePath = path.join(tempDir, `direct_${id}.jpg`);
 
-  // rotate() không góc = áp EXIF rồi xóa tag Orientation.
-  // Lấy kích thước output (sau khi bake), không lấy width/height gốc trong header.
-  const { data, info } = await sharp(inputPath)
-    .rotate()
+  const rotateDeg = getPrintRotateDeg();
+  const meta = await sharp(inputPath).metadata();
+
+  // autoOrient() áp EXIF rồi xóa tag Orientation; rotate(deg) chạy sau auto-orient.
+  // Lấy kích thước output (sau khi bake + xoay), không lấy width/height gốc trong header.
+  let pipeline = sharp(inputPath).autoOrient();
+  if (rotateDeg !== 0) pipeline = pipeline.rotate(rotateDeg);
+  const { data, info } = await pipeline
     .jpeg({ quality: 95, chromaSubsampling: "4:4:4" })
     .toBuffer({ resolveWithObject: true });
+
+  console.log("[PRINT direct] bake", {
+    exifOrientation: meta.orientation ?? null,
+    source: { width: meta.width, height: meta.height },
+    rotateDeg,
+    output: { width: info.width, height: info.height },
+  });
 
   fs.writeFileSync(filePath, data);
   return { filePath, landscape: info.width > info.height };
