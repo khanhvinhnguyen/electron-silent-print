@@ -57,9 +57,10 @@ async function bakeOrientation(
   const swapped = (meta.orientation ?? 1) >= 5;
   const orientedW = (swapped ? meta.height : meta.width) ?? 0;
   const orientedH = (swapped ? meta.width : meta.height) ?? 0;
-  // Chỉ xoay ảnh ngang → trang gửi driver luôn dọc (rộng < dài). Trang "rộng > dài" kèm
-  // landscape: false thành DEVMODE dmPaperWidth > dmPaperLength, driver máy in ảnh có thể từ chối job.
-  const rotateDeg = applyDriverRotate && orientedW > orientedH ? getPrintRotateDeg() : 0;
+  // DNP DS-RX1 dùng cuộn 6" → trang thật của driver là 6×4 NGANG. Gửi trang dọc 4×6 thì
+  // driver in 1:1 và cắt mất 2" (đã gặp: chỉ ra 2/3 ảnh + dải đen). Vì vậy chỉ xoay ảnh dọc
+  // cho thành ngang; ảnh ngang (frame 1800×1200) giữ nguyên → trang luôn 15.24 × 10.16 cm.
+  const rotateDeg = applyDriverRotate && orientedH > orientedW ? getPrintRotateDeg() : 0;
 
   // autoOrient() áp EXIF rồi xóa tag Orientation; rotate(deg) chạy sau auto-orient.
   // Lấy kích thước output (sau khi bake + xoay), không lấy width/height gốc trong header.

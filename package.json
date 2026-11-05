@@ -1,6 +1,6 @@
 {
   "name": "electron-silent-print",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "Electron app for silent printing with remote Vite UI",
   "main": "dist/main/main.js",
   "scripts": {
