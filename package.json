@@ -39,9 +39,16 @@
     "typescript": "^5.9.3",
     "wait-on": "^9.0.3"
   },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "electron",
+      "sharp",
+      "electron-winstaller"
+    ]
+  },
   "build": {
     "appId": "com.khanhvinhnguyen.electron-silent-print",
-    "productName": "Uniqlo Chibi",
+    "productName": "Bia SaiGon",
     "directories": {
       "output": "release"
     },

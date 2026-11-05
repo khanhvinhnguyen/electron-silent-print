@@ -4,7 +4,7 @@ import { IpcMain, BrowserWindow } from 'electron';
 import { randomUUID } from 'crypto';
 import { pathToFileURL } from 'url';
 import { nativePrint4x6, printDeeplink } from './print-native';
-import { printDirect } from './print-direct';
+import { openDirectPrintPreview, printDirect } from './print-direct';
 
 // ==================== SHARED STATE ====================
 let selectedPrinterName: string | null = null;
@@ -65,6 +65,13 @@ export interface PrintResponse {
 
 // ==================== SETUP HANDLERS (ĐÃ BỔ SUNG CASE 'image') ====================
 export function setupPrintHandlers(ipcMain: IpcMain): void {
+  // Preview đúng output in (khổ 10x15 + EXIF), không mở dialog máy in.
+  ipcMain.handle('preview-print-direct', async (_event, filePath: string) => {
+    if (!filePath) return { success: false, message: 'preview requires filePath' };
+    console.log('[PRINT] preview-print-direct', filePath);
+    return openDirectPrintPreview(filePath);
+  });
+
   ipcMain.handle('print-request', async (event, printData: PrintRequest) => {
     const jobId = randomUUID();
     console.log(`[PRINT] Job ${jobId} started | Type: ${printData.type} | Printer: ${printData.printerName} | FilePath: ${printData.filePath} | Silent: ${printData.silent} | content: ${printData.content}`);

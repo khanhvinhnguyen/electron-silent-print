@@ -24,7 +24,7 @@ export const ENV = {
   DEBUG_LOGS: process.env.NODE_ENV === 'development' || process.env.DEBUG_LOGS === 'false',
   
   // App settings
-  APP_NAME: process.env.APP_NAME || 'Uniqlo Chibi',
+  APP_NAME: process.env.APP_NAME || 'Bia SaiGon',
   APP_VERSION: process.env.npm_package_version || '1.0.0',
   
   // Print settings

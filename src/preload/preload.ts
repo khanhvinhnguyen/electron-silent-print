@@ -45,6 +45,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return ipcRenderer.invoke('set-page-size', size);
   },
   openPrintPreview: (html: string) => ipcRenderer.invoke('open-print-preview', html),
+  /** Preview đúng output in 10×15 (sau EXIF, đúng ngang/dọc). Truyền filePath đã save temp. */
+  previewPrintDirect: (filePath: string) =>
+    ipcRenderer.invoke('preview-print-direct', filePath),
   saveImageToTemp: (blob: Blob) => ipcRenderer.invoke('save-image-to-temp', blob),
 });
 

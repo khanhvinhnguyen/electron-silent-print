@@ -7,6 +7,12 @@ import { setupPrinterDiscovery } from './printer-discovery';
 
 // Load .env
 dotenv.config({ path: path.join(__dirname, '../../.env') });
+// File .env đặt cạnh file exe (hoặc PORTABLE_EXECUTABLE_DIR) ghi đè bản trong asar,
+// để chỉnh PRINT_ROTATE_DEG... tại chỗ mà không cần build lại.
+dotenv.config({
+  path: path.join(process.env.PORTABLE_EXECUTABLE_DIR || path.dirname(process.execPath), '.env'),
+  override: true,
+});
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const ENV = {
@@ -14,7 +20,7 @@ const ENV = {
   REMOTE_UI_URL: process.env.REMOTE_UI_URL || 'http://localhost:5173',
   ENABLE_DEVTOOLS: process.env.ENABLE_DEVTOOLS === 'true' || (process.env.ENABLE_DEVTOOLS === undefined && NODE_ENV !== 'production'),
   DEBUG_LOGS: process.env.DEBUG_LOGS === 'true',
-  APP_NAME: process.env.APP_NAME || 'Uniqlo Chibi',
+  APP_NAME: process.env.APP_NAME || 'Bia SaiGon',
   APP_VERSION: app.getVersion()
 };
 
@@ -23,6 +29,25 @@ let previewWindow: BrowserWindow | null = null;     // ← Preview Dialog
 let selectedPrinterName: string | null = null;      // ← Chọn máy in
 let isLandscape = false;                            // ← Orientation
 let isFullScreen = true;
+
+/** Accept self-signed certs from local Vite HTTPS (ERR_CERT_AUTHORITY_INVALID). */
+function isLocalDevUrl(url: string): boolean {
+  try {
+    const { hostname } = new URL(url);
+    return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1';
+  } catch {
+    return false;
+  }
+}
+
+app.on('certificate-error', (event, _webContents, url, _error, _certificate, callback) => {
+  if (isLocalDevUrl(url)) {
+    event.preventDefault();
+    callback(true);
+    return;
+  }
+  callback(false);
+});
 
 function createWindow(): BrowserWindow {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;
@@ -41,7 +66,11 @@ function createWindow(): BrowserWindow {
       sandbox: true,
       webSecurity: true
     },
-    icon: path.join(__dirname, '../../assets/icons/icon.ico'),
+    icon: path.join(
+      __dirname,
+      '../../assets/icons',
+      process.platform === 'win32' ? 'icon.ico' : process.platform === 'darwin' ? 'icon.icns' : 'icon.png'
+    ),
     show: false
   });
 
